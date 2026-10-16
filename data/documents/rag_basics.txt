@@ -1,0 +1,19 @@
+Retrieval-Augmented Generation combines information retrieval with
+large language model generation.
+
+A RAG system typically retrieves relevant information from an external
+knowledge base before generating an answer.
+
+The main benefits of RAG include access to external knowledge,
+better grounding, easier knowledge updates, and the ability to work
+with domain-specific information.
+
+RAG also introduces challenges. Retrieval quality strongly affects
+answer quality. Systems require document processing, chunking,
+embedding generation, indexing, retrieval, and monitoring.
+
+RAG can be an alternative to fine-tuning when the primary requirement
+is to provide an LLM with changing or domain-specific information.
+
+Important RAG components include document loaders, text splitters,
+embedding models, vector databases, retrievers, and language models.

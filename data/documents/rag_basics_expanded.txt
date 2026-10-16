@@ -1,0 +1,57 @@
+Retrieval-Augmented Generation (RAG): Overview
+
+Definition
+Retrieval-Augmented Generation (RAG) combines information retrieval with text generation. Before an LLM answers a question, the application searches a knowledge source for relevant passages and includes those passages in the model's context. The model then generates an answer informed by the retrieved material.
+
+Typical RAG workflow
+1. Document ingestion: collect files such as text documents, PDFs, manuals, policies, or knowledge-base articles.
+2. Text extraction: convert each source into text and preserve useful metadata, especially the source filename or URL.
+3. Chunking: split long documents into smaller, overlapping passages. Chunk size and overlap affect retrieval precision and context coverage.
+4. Embeddings: convert each chunk into a numerical vector that represents semantic features of the text.
+5. Indexing: store vectors, chunk text, and metadata in a vector database.
+6. Query embedding and retrieval: embed the user's query and retrieve the most relevant chunks, often using similarity search and a top-k limit.
+7. Prompt construction: provide the user's question and retrieved passages to the LLM, clearly identifying the passages as untrusted evidence rather than instructions.
+8. Generation and validation: generate an answer grounded in the retrieved evidence, and optionally check relevance, factual support, and completeness.
+9. Monitoring: evaluate retrieval quality, answer quality, latency, cost, and failure cases.
+
+Main benefits of RAG
+- Access to external knowledge: an LLM can use information from a selected knowledge base instead of relying only on information learned during training.
+- Easier knowledge updates: the indexed documents can be updated without retraining the underlying LLM.
+- Domain-specific answers: internal manuals, product documentation, policies, and specialist material can support answers tailored to a domain.
+- Better grounding: retrieved passages give the model evidence to use when formulating its answer.
+- Inspectability: applications can retain source metadata and show which documents informed an answer.
+- Flexible data control: teams can update, filter, or remove indexed sources as their information needs change.
+
+Limitations and risks
+- Retrieval errors: if the relevant passage is not retrieved, the answer may omit important information or be incorrect.
+- Poor source quality: outdated, contradictory, incomplete, or inaccurate documents can lead to poor answers.
+- Chunking trade-offs: chunks that are too small can lose context; chunks that are too large can introduce irrelevant material and consume more context.
+- Embedding mismatch: semantic similarity does not guarantee that a passage directly answers the question.
+- Context limits: too many retrieved passages can increase latency and token use, while too few can omit evidence.
+- Unsupported generation: an LLM can still make claims not supported by retrieved text.
+- Prompt injection: retrieved documents may contain malicious instructions. Retrieved content should be treated as data, not as authority over system or developer instructions.
+- Privacy and access control: retrieval must respect permissions so users do not receive documents they are not authorized to see.
+- Evaluation complexity: retrieval quality and final answer quality need separate testing.
+
+RAG compared with fine-tuning
+RAG is usually useful when the model needs access to changing, private, or source-specific information and the application can retrieve that information at query time. Fine-tuning changes model behavior or adapts a model using training examples. Fine-tuning is not a substitute for retrieving frequently changing facts. The two approaches can be combined when a system needs both adapted behavior and external evidence.
+
+Common RAG components
+- Document loader: reads files and captures source metadata.
+- Text splitter: creates manageable chunks.
+- Embedding model: converts text into vectors.
+- Vector store: persists vectors, text, and metadata.
+- Retriever: selects relevant chunks for a query.
+- Prompt builder: combines the query with retrieved evidence and safety instructions.
+- Language model: generates the response.
+- Evaluator or critic: checks relevance, support, and completeness.
+- Monitoring and logging: records retrieval and generation behavior for debugging and evaluation.
+
+Practical evaluation
+Evaluate retrieval separately from answer generation. Useful retrieval checks include whether the expected source appears in the top-k results and whether retrieved chunks actually contain evidence relevant to the query. Useful answer checks include relevance to the question, factual support by retrieved text, completeness, clarity, citation correctness when citations are shown, and resistance to instructions embedded in documents. Test with questions whose answers are present, absent, ambiguous, and contradicted by the knowledge base.
+
+Security guidance
+Treat retrieved documents as untrusted input. Do not let instructions in retrieved text override the application's system rules or the user's actual question. Avoid placing secrets in prompts or retrieved content. Enforce document-level permissions before retrieval, and validate the final answer before showing it to users.
+
+Summary
+RAG connects an LLM to an external knowledge source at answer time. Its value depends on the quality of the documents, chunking, embeddings, retrieval, prompt construction, and answer validation. It can improve grounding and knowledge freshness, but it does not guarantee correctness by itself.
